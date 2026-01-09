@@ -27,6 +27,7 @@ class ModelSettings(BaseModel):
 
 class AgentSettings(BaseModel):
     name: str
+    base_url: str
     model: ModelSettings
 
 class AppSettings(BaseModel):
@@ -34,11 +35,15 @@ class AppSettings(BaseModel):
     host: str
     port: int
 
+class MasterAgentSettings(BaseModel):
+    base_url: str    
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_nested_delimiter="__")
     gateway: GatewaySettings
     agent: AgentSettings
     app: AppSettings
+    master_agent: MasterAgentSettings
 
 _config_instance = None
 

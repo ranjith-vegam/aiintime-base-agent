@@ -1,20 +1,30 @@
 import uuid
 import uvicorn
+import httpx
+import json
 from fastapi import FastAPI, BackgroundTasks
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
-
 from aiintime_agent.config import get_config
 from aiintime_agent.runner import agent_runner
+
+master_agent_settings = get_config().master_agent
+agent_settings = get_config().agent
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     agent_runner.initialize_runner()
     print("Runner initialized")
 
-    
+    httpx.post(
+        master_agent_settings.base_url + "/register_agent",
+        json={
+            "agent_name": agent_settings.name,
+            "agent_card": json.load(open("agent-card.json")),
+            "agent_base_url": agent_settings.base_url,
+        }
+    )
     yield
-
 
 app = FastAPI(
     title="AIINTIME Agent API",

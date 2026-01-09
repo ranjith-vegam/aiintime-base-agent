@@ -1,0 +1,29 @@
+{
+  "name": "AIIntime_Agent",
+  "version": "1.0.0",
+  "description": "The agent can carry out email-related operations, interact with GitHub repositories, and execute internal system workflows by connecting to dedicated backend servers. It follows a deterministic reasoning process to discover available servers, explore tools, understand their schemas, execute actions with validated inputs, and communicate all results strictly via a master agent.",
+  "url": "http://10.10.10.51:9194",
+  "capabilities": {},
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "email_operations",
+      "name": "Email Operations",
+      "description": "Perform email-related actions such as reading, sending, or managing emails by invoking tools exposed by the email backend server.",
+      "tags": ["email", "communication", "automation"]
+    },
+    {
+      "id": "github_operations",
+      "name": "GitHub Operations",
+      "description": "Interact with GitHub repositories to perform actions such as fetching issues, managing pull requests, or querying repository data using tools exposed by the GitHub backend server.",
+      "tags": ["github", "version-control", "automation"]
+    },
+    {
+      "id": "internal_system_operations",
+      "name": "Internal System Operations",
+      "description": "Execute organization-specific internal workflows and system actions by invoking tools exposed by internal backend servers.",
+      "tags": ["internal", "enterprise", "automation"]
+    }
+  ]
+}
