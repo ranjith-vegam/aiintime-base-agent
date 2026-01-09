@@ -11,6 +11,8 @@ from aiintime_agent.runner import agent_runner
 async def lifespan(app: FastAPI):
     agent_runner.initialize_runner()
     print("Runner initialized")
+
+    
     yield
 
 
