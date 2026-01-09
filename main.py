@@ -1,0 +1,54 @@
+import uuid
+import uvicorn
+from fastapi import FastAPI, BackgroundTasks
+from contextlib import asynccontextmanager
+from pydantic import BaseModel
+
+from aiintime_agent.config import get_config
+from aiintime_agent.runner import agent_runner
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    agent_runner.initialize_runner()
+    print("Runner initialized")
+    yield
+
+
+app = FastAPI(
+    title="AIINTIME Agent API",
+    description="AIINTIME Agent API",
+    version="0.0.1",
+    lifespan=lifespan
+)
+
+class ChatRequest(BaseModel):
+    user_id: str
+    message: str
+
+@app.post("/chat")
+async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
+
+    session_id = str(uuid.uuid4())
+    await agent_runner.create_new_session(
+        user_id=request.user_id,
+        session_id=session_id
+    )
+    
+    background_tasks.add_task(
+        agent_runner.run_async_chat,
+        session_id,
+        request.user_id,
+        request.message
+    )
+    return {
+        "message" : "Your request is being processed. Wait for the response."
+    }
+
+
+if __name__ == "__main__":
+    app_config = get_config().app
+    uvicorn.run(
+        app, 
+        host=app_config.host,
+        port=app_config.port
+    )

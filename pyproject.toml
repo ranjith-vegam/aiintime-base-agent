@@ -1,0 +1,12 @@
+[project]
+name = "base-template"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "google-adk>=1.22.0",
+    "litellm>=1.80.13",
+    "mcp>=1.25.0",
+    "redis>=7.1.0",
+]
