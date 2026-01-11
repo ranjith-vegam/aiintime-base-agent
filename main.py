@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+
 import uuid
 import uvicorn
 import httpx
@@ -53,7 +56,7 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
         request.message
     )
     return {
-        "message" : "Your request is being processed. Wait for the response."
+        "message" : "Your request is being processed. Ask User to wait for the response."
     }
 
 

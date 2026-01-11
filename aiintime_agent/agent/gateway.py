@@ -55,28 +55,51 @@ async def list_mcp_servers() -> List[dict]:
     ]
 
 async def list_mcp_tools(server_name: str) -> List[dict]:
-    """List all tools for a specific MCP server."""
+    """
+    List all tools for a specific MCP server.
+
+    args:
+        server_name: Name of the MCP server
+    """
     endpoint = BACKEND_SERVERS.get(server_name)
     if not endpoint:
         raise ValueError(f"Unknown server: {server_name}")
     return await _list_tools(endpoint)
 
 async def describe_mcp_tool(server_name: str, api_name: str) -> Dict[str, Any]:
-    """Describe a specific tool for an MCP server."""
+    """
+    Describe a specific tool for an MCP server.
+
+    args:
+        server_name: Name of the MCP server
+        api_name: Name of the tool
+    """
     endpoint = BACKEND_SERVERS.get(server_name)
     if not endpoint:
         raise ValueError(f"Unknown server: {server_name}")
     return await _describe_tool(endpoint, api_name)
 
 async def execute_mcp_tool(server_name: str, api_name: str, args: Dict[str, Any]) -> Any:
-    """Execute a tool on a given MCP server."""
+    """
+    Execute a tool on a given MCP server.
+
+    args:
+        server_name: Name of the MCP server
+        api_name: Name of the tool
+        args: Arguments for the tool
+    """
     endpoint = BACKEND_SERVERS.get(server_name)
     if not endpoint:
         raise ValueError(f"Unknown server: {server_name}")
     return await _call_tool(endpoint, api_name, args)
 
 async def send_response_to_master_agent(response: str) -> Dict[str, Any]:
-    """Send response to master agent."""
+    """
+    Send response to master agent.
+
+    args:
+        response: Response to send to master agent
+    """
     print(response)
     return {"message": "Response sent to master agent"}
 
