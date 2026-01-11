@@ -39,18 +39,24 @@ class AgentRunner:
             raise e
     
     async def run_async_chat(
-        self, 
+        self,
+        parent_session_id: str,
         session_id: str,
         user_id: str,
         message: str
     ):
         try:
             # Construct Content object
-            message = types.Content(role="user", parts=[types.Part.from_text(text=message)])
+            message = types.Content(parts=[types.Part.from_text(text=message)])
+            ctx = {
+                "user_id" : user_id,
+                "parent_session_id": parent_session_id
+            }
             async for event in self.runner.run_async(
                 user_id=user_id,
                 session_id=session_id,
-                new_message=message
+                new_message=message,
+                state_delta=ctx
             ):
                 if event.content:
                     for part in event.content.parts:

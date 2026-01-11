@@ -1,9 +1,10 @@
+import httpx
 from typing import List, Dict, Any
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
 from aiintime_agent.config import get_config
-from google.adk.tools import FunctionTool
+from google.adk.tools import FunctionTool, ToolContext
 
 # Load backend servers
 gateway_settings = get_config().gateway
@@ -93,15 +94,28 @@ async def execute_mcp_tool(server_name: str, api_name: str, args: Dict[str, Any]
         raise ValueError(f"Unknown server: {server_name}")
     return await _call_tool(endpoint, api_name, args)
 
-async def send_response_to_master_agent(response: str) -> Dict[str, Any]:
+async def send_response_to_master_agent(tool_context: ToolContext, response: str) -> Dict[str, Any]:
     """
     Send response to master agent.
 
     args:
         response: Response to send to master agent
     """
-    print(response)
-    return {"message": "Response sent to master agent"}
+    try:
+        payload = {
+            "session_id": tool_context.state["parent_session_id"],
+            "user_id" : tool_context.state["user_id"],
+            "response": response
+        }
+        print(payload)
+        response = httpx.post(
+            get_config().master_agent.base_url + "/receive_response",
+            json=payload
+        )
+
+        return response.json()
+    except Exception as e:
+        return {"error": str(e)}
 
 tools = [
     FunctionTool(func=list_mcp_servers),

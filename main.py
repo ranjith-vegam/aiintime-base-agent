@@ -37,11 +37,12 @@ app = FastAPI(
 )
 
 class ChatRequest(BaseModel):
+    parent_session_id: str
     user_id: str
     message: str
 
-@app.post("/chat")
-async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
+@app.post("/delegate")
+async def delegate(request: ChatRequest, background_tasks: BackgroundTasks):
 
     session_id = str(uuid.uuid4())
     await agent_runner.create_new_session(
@@ -51,12 +52,13 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
     
     background_tasks.add_task(
         agent_runner.run_async_chat,
+        request.parent_session_id,
         session_id,
         request.user_id,
         request.message
     )
     return {
-        "message" : "Your request is being processed. Ask User to wait for the response."
+        "message" : "Tell user that the request is being processed. Ask User to wait for the response."
     }
 
 
